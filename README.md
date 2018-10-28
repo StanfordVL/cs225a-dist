@@ -116,7 +116,7 @@ Repository for controlling the Kinova Mico or Jaco via SAI 2.0. We have derived 
     ```
     git clone https://github.com/manips-sai/sai2-common.git
     cd sai2-common
-    mkdir build
+v    mkdir build
     cd build
     cmake ..
     make -j4
@@ -129,13 +129,8 @@ Repository for controlling the Kinova Mico or Jaco via SAI 2.0. We have derived 
 
 ## Post-Installation
 
-1. Inside bin, you will find visualizer, simulator, and hw0
+1. Inside bin, you will find visualizer, simulator, and controller. Run all of these using one of the following. The shell scripts set the controller gains, initialize starting joint position, and kick off the simulator, visualizer, and controller.
    ```
-   ./hw0 &
-   ./visualizer &
+   sh init_jaco.sh
+   sh init_mico.sh
    ```
-   Note this opens up the applications in the background, use "jobs" to see currently running jobs and "fg" or "bg" to foreground next job or background next job
-   
-1.5 You can also run the script inside the bin folder "run_hw0.sh" to run hw0. Ctrl-c on the shell to quit.
-   
-2. Read the source code of hw0 inside src/hw0/hw0.cpp and the URDF file src/RRPbot.urdf and src/world.urdf to understand what is happening inside the robot code and how the simple robot is described both kinematically and graphically.
