@@ -1,109 +1,61 @@
 set -e
 
-# Update sai2-common
-cd sai2-common
-git pull origin master
-mkdir -p build_rel
-cd build_rel
-cmake ..
-make -j4
-cd ../..
-
-# Build cs225a
 mkdir -p build
 cd build
 cmake ..
 make -j4
 cd ..
 
-# Download resource files
-mkdir -p resources
-cd resources
-if [ ! -d "puma_graphics" ]; then
-	curl -L http://cs.stanford.edu/groups/manips/teaching/cs225a/resources/puma_graphics.zip -o puma_graphics.zip
-	unzip puma_graphics.zip
-	rm puma_graphics.zip
-fi
-if [ ! -d "kuka_iiwa_graphics" ]; then
-	curl -L http://cs.stanford.edu/groups/manips/teaching/cs225a/resources/kuka_iiwa_graphics.zip -o kuka_iiwa_graphics.zip
-	unzip kuka_iiwa_graphics.zip
-	rm kuka_iiwa_graphics.zip
-fi
-cd ..
-
 cd bin
-if [ -f "hw1" ]; then
-	cd resources/hw1
-	if [ ! -e "puma_graphics" ]; then
-		ln -s ../../../resources/puma_graphics .
-	fi
-	cd ../..
-fi
-if [ -f "hw2" ]; then
-	cd resources/hw2
-	if [ ! -e "kuka_iiwa_graphics" ]; then
-		ln -s ../../../resources/kuka_iiwa_graphics .
-	fi
-	cd ../..
-fi
-if [ -f "hw3" ]; then
-	cd resources/hw3
-	if [ ! -e "kuka_iiwa_graphics" ]; then
-		ln -s ../../../resources/kuka_iiwa_graphics .
-	fi
-	cd ../..
-fi
-if [ -f "demo_project" ]; then
-	cd resources/demo_project
-	if [ ! -e "kuka_iiwa_graphics" ]; then
-		ln -s ../../../resources/kuka_iiwa_graphics .
-	fi
-	cd ../..
-fi
-if [ -f "kuka_iiwa_driver" ]; then
-	cd resources/kuka_iiwa_driver
-	if [ ! -e "kuka_iiwa_graphics" ]; then
-		ln -s ../../../resources/kuka_iiwa_graphics .
-	fi
-	cd ../..
-fi
-if [ -f "kuka_hold_pos" ]; then
-	cd resources/kuka_hold_pos
-	if [ ! -e "kuka_iiwa_graphics" ]; then
-		ln -s ../../../resources/kuka_iiwa_graphics .
-	fi
-	cd ../..
+if [ -f 'controller' ]; then
+    cd resources/controller
+    if [ ! -e 'kinova_graphics' ]; then
+	ln -s ../../../resources/kinova_graphics .
+    fi
+    cd ../..
 fi
 cd ..
 
 # Insert helper scripts into bin directory
 cd bin
 
-# Make script
-cat <<EOF > make.sh
-cd ..
-mkdir -p build
-cd build
-cmake ..
-make -j4
-cd ../bin
+# Jaco Controller Script
+if [ -f 'controller' ]; then
+    cat <<EOF > init_jaco.sh
+redis-cli flushall
+redis-cli set cs225a::robot::jaco::tasks::kp_pos 300
+redis-cli set cs225a::robot::jaco::tasks::kv_pos 40
+redis-cli set cs225a::robot::jaco::tasks::kp_ori 300
+redis-cli set cs225a::robot::jaco::tasks::kv_ori 30
+redis-cli set cs225a::robot::jaco::tasks::kp_joint 0
+redis-cli set cs225a::robot::jaco::tasks::kv_joint 30
+redis-cli set cs225a::robot::jaco::tasks::kp_joint_init 300
+redis-cli set cs225a::robot::jaco::tasks::kv_joint_init 10
+redis-cli set cs225a::robot::jaco::tasks::jt_pos_des "4.71238898038 1.57079632679 1.57079632679 0.0 0.0 0.0"
+./run_controller.sh controller resources/controller/world_jaco.urdf resources/controller/jaco.urdf jaco
 EOF
-chmod +x make.sh
-
-# Run hw0 script
-if [ -f "hw0" ]; then
-	cat <<EOF > run_hw0.sh
-# This script calls ./visualizer and ./hw0 simultaneously.
-# All arguments to this script will be passed onto ./hw0
-
-trap 'kill %1' SIGINT
-./visualizer resources/hw0/world.urdf resources/hw0/RRPbot.urdf RRPbot & ./hw0 "\$@"
-EOF
-	chmod +x run_hw0.sh
 fi
 
-# Run generic controller script
-if [ -f "hw1" ]; then
+# Mico Controller Script
+if [ -f 'controller' ]; then
+    cat <<EOF > init_mico.sh
+redis-cli flushall
+redis-cli set cs225a::robot::mico::tasks::kp_pos 300
+redis-cli set cs225a::robot::mico::tasks::kv_pos 40
+redis-cli set cs225a::robot::mico::tasks::kp_ori 300
+redis-cli set cs225a::robot::mico::tasks::kv_ori 30
+redis-cli set cs225a::robot::mico::tasks::kp_joint 0
+redis-cli set cs225a::robot::mico::tasks::kv_joint 30
+redis-cli set cs225a::robot::mico::tasks::kp_joint_init 300
+redis-cli set cs225a::robot::mico::tasks::kv_joint_init 10
+redis-cli set cs225a::robot::mico::tasks::jt_pos_des "1.48481 3.22206 4.90119 2.04572 4.81604 1.88954"
+redis-cli set cs225a::robot::mico::tasks::jt_pos_des "4.71238898038 1.57079632679 1.57079632679 0.0 0.0 0.0" 
+./run_controller.sh controller resources/controller/world_mico.urdf resources/controller/mico.urdf mico
+EOF
+fi
+
+# Run Generic Controller Script
+if [ -f 'controller' ]; then
 	cat <<EOF > run_controller.sh
 if [ "\$#" -lt 4 ]; then
 	cat <<EOM
@@ -116,7 +68,6 @@ else
 	trap 'kill %1; kill %2' SIGINT
 	trap 'kill %1; kill %2' EXIT
 	./simulator \$2 \$3 \$4 > simulator.log & ./visualizer \$2 \$3 \$4 > visualizer.log & ./"\$@"
-	# ./visualizer \$2 \$3 \$4 & ./simulator \$2 \$3 \$4 & ./"\$@"
 fi
 EOF
 	chmod +x run_controller.sh

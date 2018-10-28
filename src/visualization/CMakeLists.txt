@@ -1,6 +1,3 @@
-# glfw3
-find_package(glfw3 QUIET)
-find_library(GLFW_LIBRARY glfw)
 
 set (VISUALIZER_SOURCE
 	uiforce/UIForceWidget.cpp
@@ -11,6 +8,4 @@ add_executable(visualizer
 	${VISUALIZER_SOURCE})
 
 target_link_libraries(visualizer
-	${CS225A_COMMON_LIBRARIES}
-	${GLFW_LIBRARY}
-)
+	${CS225A_COMMON_LIBRARIES})

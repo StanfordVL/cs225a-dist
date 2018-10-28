@@ -6,11 +6,6 @@ set -e
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	sudo apt-get install curl cmake libeigen3-dev libtinyxml2-dev libjsoncpp-dev libhiredis-dev libglfw3-dev xorg-dev freeglut3-dev libasound2-dev libusb-1.0-0-dev redis-server
-	# Install gcc 5 for Ubuntu 14.04:
-	# sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-	# sudo apt-get update
-	# sudo apt-get install gcc-5 g++-5
-	# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	brew install cmake eigen redis hiredis tinyxml2 jsoncpp glfw3
 fi
@@ -23,9 +18,9 @@ cd external
 # Install RBDL
 # ------------
 
-curl -L https://bitbucket.org/rbdl/rbdl/get/default.zip -o rbdl-2.5.0.zip
+curl -L https://bitbucket.org/swheim/rbdl/get/default.zip -o rbdl-2.5.0.zip
 unzip rbdl-2.5.0.zip
-mv rbdl-rbdl-849d2aee8f4c rbdl
+mv swheim-rbdl-849d2aee8f4c rbdl
 cd rbdl
 if [ ! -f CMakeLists.txt.bkp ]; then
 	cp CMakeLists.txt CMakeLists.txt.bkp
@@ -132,21 +127,9 @@ cd ../..
 # ----------------
 
 cd sai2-common
-git submodule update --init --recursive
 mkdir -p build_rel
 cd build_rel
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j4
 cd ../..
 
-# -------------------
-# Install NatNetLinux
-# -------------------
-
-# TODO: Test
-cd external/NatNetLinux.git
-git submodule update --init
-cd ../..
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	sudo apt-get install libboost-all-dev
-fi

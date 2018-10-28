@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-
-<tool name="calibration_compensation">
-	<inertial>
-		<origin xyz="0.0 0.0 0.02" />
-		<mass value="0.33" />
-	</inertial>
-</tool>
