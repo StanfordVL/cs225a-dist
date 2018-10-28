@@ -1,14 +1,15 @@
-# cs225a
-Repository for class resources: CS225a experimental robotics
+# sai-kinova
+
+Repository for controlling the Kinova Mico or Jaco via SAI 2.0. We have derived this repository from the CS225a (experimental robotics) class repository.
 
 ## Automatic Installation Instructions (for Ubuntu and Mac only)
 1. If you have a Mac, install Brew (https://brew.sh/). If you have Ubuntu, install git (sudo apt install git)
 
 2. Clone this repository
 
-   ```git clone https://github.com/tmigimatsu/cs225a-dist.git cs225a.git```
+   ```git clone https://github.com/StanfordVL/sai-kinova.git sai-kinova.git```
 
-3. Download sai2-simulation.zip from AFS and extract its contents into cs225a.git/sai2-simulation.
+3. Obtain sai2-simulation.zip and extract its contents into cs225a.git/sai2-simulation.
 
 4. Run the install script inside cs225a.git. This will take a few minutes.
 

@@ -49,4 +49,3 @@ compile_commands.json
 external/*
 !external/NatNetLinux.git
 sai2-simulation
-resources
