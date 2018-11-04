@@ -31,22 +31,21 @@ fi
 if [ -f 'controller' ]; then
     cat <<EOF > init_standalone.sh
 sh set_gains.sh mico
-./run_standalone.sh controller resources/controller/world_mico.urdf resources/controller/mico.urdf mico
+./run_standalone.sh controller_standalone resources/controller/world_mico.urdf resources/controller/mico.urdf mico
 EOF
 fi
 
 # Set Gains Script
 if [ -f 'controller' ]; then
     cat <<EOF > set_gains.sh
-redis-cli flushall
-redis-cli set cs225a::robot::\$1::tasks::kp_pos 5
-redis-cli set cs225a::robot::\$1::tasks::kv_pos 2
-redis-cli set cs225a::robot::\$1::tasks::kp_ori 5
-redis-cli set cs225a::robot::\$1::tasks::kv_ori 2
-redis-cli set cs225a::robot::\$1::tasks::kp_joint 5
-redis-cli set cs225a::robot::\$1::tasks::kv_joint 2
-redis-cli set cs225a::robot::\$1::tasks::kp_joint_init 5
-redis-cli set cs225a::robot::\$1::tasks::kv_joint_init 2
+redis-cli set cs225a::robot::\$1::tasks::kp_pos 50
+redis-cli set cs225a::robot::\$1::tasks::kv_pos 20
+redis-cli set cs225a::robot::\$1::tasks::kp_ori 0
+redis-cli set cs225a::robot::\$1::tasks::kv_ori 0
+redis-cli set cs225a::robot::\$1::tasks::kp_joint 0
+redis-cli set cs225a::robot::\$1::tasks::kv_joint 0
+redis-cli set cs225a::robot::\$1::tasks::kp_joint_init 50
+redis-cli set cs225a::robot::\$1::tasks::kv_joint_init 20
 redis-cli set cs225a::robot::\$1::tasks::jt_pos_des "4.71238898038 1.57079632679 1.57079632679 0.0 0.0 0.0"
 EOF
 fi
