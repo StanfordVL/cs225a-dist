@@ -9,7 +9,7 @@ Repository for controlling the Kinova Mico or Jaco via SAI 2.0. We have derived 
 
    ```git clone https://github.com/StanfordVL/sai-kinova.git sai-kinova.git```
 
-3. Obtain sai2-simulation.zip and extract its contents into cs225a.git/sai2-simulation.
+3. Obtain sai2-simulation.zip and extract its contents into sai-kinova.git/sai2-simulation.
 
 4. Run the install script inside cs225a.git. This will take a few minutes.
 
